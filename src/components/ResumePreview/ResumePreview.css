@@ -1,0 +1,32 @@
+.resume-preview .preview-container {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 12px;
+  line-height: 1.5;
+  max-height: 800px;
+  overflow-y: auto;
+}
+
+.resume-preview h1 {
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.resume-preview h2 {
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+.resume-preview ul {
+  margin-top: 4px;
+}
+
+.resume-preview ul li {
+  margin-bottom: 2px;
+}
+
+@media print {
+  .resume-preview .preview-container {
+    box-shadow: none;
+    border: none;
+  }
+}
