@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Text-based PDF Test</title>
+    <script src="https://unpkg.com/jspdf@3.0.1/dist/jspdf.es.min.js"></script>
+</head>
+<body>
+    <h1>Text-based PDF Generation Test</h1>
+    <button onclick="generateSamplePDF()">Generate Sample Resume PDF</button>
+    
+    <script>
+        function generateSamplePDF() {
+            const { jsPDF } = window.jspdf;
+            
+            // Sample resume data
+            const resume = {
+                personalInfo: {
+                    fullName: "John Doe",
+                    email: "john.doe@example.com",
+                    phone: "+1 (555) 123-4567",
+                    linkedin: "https://linkedin.com/in/johndoe",
+                    github: "https://github.com/johndoe"
+                },
+                experience: [
+                    {
+                        position: "Senior Software Engineer",
+                        company: "Tech Corp",
+                        location: "San Francisco, CA",
+                        startDate: "2020",
+                        endDate: "Present",
+                        descriptions: ["Led development of microservices architecture", "Improved system performance by 40%"]
+                    }
+                ],
+                education: [
+                    {
+                        degree: "Bachelor of Science",
+                        major: "Computer Science",
+                        institution: "University of Technology",
+                        location: "Boston, MA",
+                        endDate: "2019"
+                    }
+                ],
+                skills: {
+                    languages: "JavaScript, Python, Java",
+                    frameworks: "React, Node.js, Spring Boot",
+                    tools: "Git, Docker, AWS",
+                    libraries: "Redux, Express, JUnit"
+                },
+                projects: [
+                    {
+                        name: "E-commerce Platform",
+                        technologies: "React, Node.js, MongoDB",
+                        date: "2023",
+                        descriptions: ["Built scalable e-commerce platform", "Implemented payment processing"]
+                    }
+                ]
+            };
+            
+            // Create PDF with text-based content
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4'
+            });
+            
+            // Set up fonts and styling
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+            const margin = 20;
+            const lineHeight = 7;
+            let yPosition = margin;
+            
+            // Helper function to add text with word wrapping
+            const addText = (text, fontSize = 12, fontStyle = 'normal', isTitle = false) => {
+                pdf.setFontSize(fontSize);
+                pdf.setFont('helvetica', fontStyle);
+                
+                if (isTitle) {
+                    pdf.setTextColor(44, 62, 80); // Dark blue for titles
+                } else {
+                    pdf.setTextColor(0, 0, 0); // Black for regular text
+                }
+                
+                const textWidth = pageWidth - (margin * 2);
+                const splitText = pdf.splitTextToSize(text, textWidth);
+                
+                // Check if we need a new page
+                if (yPosition + (splitText.length * lineHeight) > pageHeight - margin) {
+                    pdf.addPage();
+                    yPosition = margin;
+                }
+                
+                pdf.text(splitText, margin, yPosition);
+                yPosition += splitText.length * lineHeight;
+                
+                if (isTitle) {
+                    yPosition += 3; // Extra space after titles
+                }
+            };
+            
+            // Helper function to add a section divider
+            const addSectionDivider = () => {
+                yPosition += 5;
+                pdf.setDrawColor(189, 195, 199); // Light gray
+                pdf.line(margin, yPosition, pageWidth - margin, yPosition);
+                yPosition += 8;
+            };
+            
+            // Add header with personal info
+            addText(resume.personalInfo.fullName, 20, 'bold', true);
+            
+            // Contact information with clickable links
+            addText(`Email: ${resume.personalInfo.email}`, 12);
+            addText(`Phone: ${resume.personalInfo.phone}`, 12);
+            
+            if (resume.personalInfo.linkedin) {
+                addText(`LinkedIn: ${resume.personalInfo.linkedin}`, 12);
+                const linkY = yPosition - lineHeight;
+                pdf.setTextColor(52, 152, 219); // Blue for links
+                pdf.textWithLink(resume.personalInfo.linkedin, margin + 25, linkY, { url: resume.personalInfo.linkedin });
+                pdf.setTextColor(0, 0, 0); // Reset to black
+            }
+            
+            if (resume.personalInfo.github) {
+                addText(`GitHub: ${resume.personalInfo.github}`, 12);
+                const linkY = yPosition - lineHeight;
+                pdf.setTextColor(52, 152, 219); // Blue for links
+                pdf.textWithLink(resume.personalInfo.github, margin + 25, linkY, { url: resume.personalInfo.github });
+                pdf.setTextColor(0, 0, 0); // Reset to black
+            }
+            
+            addSectionDivider();
+            
+            // Experience section
+            if (resume.experience && resume.experience.length > 0) {
+                addText('EXPERIENCE', 16, 'bold', true);
+                
+                resume.experience.forEach(exp => {
+                    addText(`${exp.position} at ${exp.company}`, 14, 'bold');
+                    addText(`${exp.location} | ${exp.startDate} - ${exp.endDate}`, 11, 'italic');
+                    
+                    if (exp.descriptions && exp.descriptions.length > 0) {
+                        exp.descriptions.forEach(desc => {
+                            addText(`• ${desc}`, 11);
+                        });
+                    }
+                    yPosition += 5; // Space between experiences
+                });
+                
+                addSectionDivider();
+            }
+            
+            // Education section
+            if (resume.education && resume.education.length > 0) {
+                addText('EDUCATION', 16, 'bold', true);
+                
+                resume.education.forEach(edu => {
+                    addText(`${edu.degree} in ${edu.major}`, 14, 'bold');
+                    addText(`${edu.institution}, ${edu.location} | ${edu.endDate}`, 11, 'italic');
+                    yPosition += 5; // Space between education entries
+                });
+                
+                addSectionDivider();
+            }
+            
+            // Skills section
+            if (resume.skills) {
+                addText('SKILLS', 16, 'bold', true);
+                
+                if (resume.skills.languages) {
+                    addText(`Languages: ${resume.skills.languages}`, 12);
+                }
+                if (resume.skills.frameworks) {
+                    addText(`Frameworks: ${resume.skills.frameworks}`, 12);
+                }
+                if (resume.skills.tools) {
+                    addText(`Tools: ${resume.skills.tools}`, 12);
+                }
+                if (resume.skills.libraries) {
+                    addText(`Libraries: ${resume.skills.libraries}`, 12);
+                }
+                
+                addSectionDivider();
+            }
+            
+            // Projects section
+            if (resume.projects && resume.projects.length > 0) {
+                addText('PROJECTS', 16, 'bold', true);
+                
+                resume.projects.forEach(project => {
+                    addText(project.name, 14, 'bold');
+                    addText(`${project.date} | Technologies: ${project.technologies}`, 11, 'italic');
+                    
+                    if (project.descriptions && project.descriptions.length > 0) {
+                        project.descriptions.forEach(desc => {
+                            addText(`• ${desc}`, 11);
+                        });
+                    }
+                    yPosition += 5; // Space between projects
+                });
+            }
+            
+            // Download the PDF
+            pdf.save('sample-resume-text-based.pdf');
+            
+            alert('Text-based PDF generated! Check your downloads folder.');
+        }
+    </script>
+</body>
+</html>

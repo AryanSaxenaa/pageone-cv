@@ -32,7 +32,7 @@ const Login: React.FC = () => {
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] bg-gray-50">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-8">Login to Resume Builder</h2>
+        <h2 className="text-2xl font-bold text-center text-gray-800 mb-8">Login to PageOneCV</h2>
         
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>

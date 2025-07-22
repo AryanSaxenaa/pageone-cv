@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Delete Functionality</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <h1>Test Resume Delete</h1>
+    <div id="results"></div>
+    
+    <script>
+        // Test function for delete functionality
+        async function testDelete() {
+            const resultsDiv = document.getElementById('results');
+            
+            try {
+                // First, try to get resumes to see if any exist
+                const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3YWU0MjRjYTBjOWVlNDdhNmE2YTFjZSIsImlhdCI6MTc1MzE4NDY4MywiZXhwIjoxNzUzMTg4MjgzfQ.UcqiwV_qM9OWgzWo5ilY2337SwjWtuCWV9aQKeifi0A';
+                
+                axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+                
+                resultsDiv.innerHTML += '<p>Testing delete functionality...</p>';
+                
+                // Test with deployed URL (replace with your Vercel URL)
+                const baseURL = 'https://your-deployed-url.vercel.app';
+                
+                const response = await axios.get(`${baseURL}/api/resumes`);
+                resultsDiv.innerHTML += `<p>Found ${response.data.length} resumes</p>`;
+                
+                if (response.data.length > 0) {
+                    const resumeId = response.data[0]._id;
+                    resultsDiv.innerHTML += `<p>Testing delete of resume: ${resumeId}</p>`;
+                    
+                    // Test delete
+                    await axios.delete(`${baseURL}/api/resumes/${resumeId}`);
+                    resultsDiv.innerHTML += '<p style="color: green;">✅ Delete successful!</p>';
+                } else {
+                    resultsDiv.innerHTML += '<p>No resumes to delete</p>';
+                }
+                
+            } catch (error) {
+                resultsDiv.innerHTML += `<p style="color: red;">❌ Error: ${error.message}</p>`;
+                if (error.response) {
+                    resultsDiv.innerHTML += `<p style="color: red;">Response: ${JSON.stringify(error.response.data)}</p>`;
+                }
+            }
+        }
+        
+        // Run test when page loads
+        // testDelete();
+    </script>
+    
+    <button onclick="testDelete()">Test Delete Functionality</button>
+</body>
+</html>

@@ -71,7 +71,7 @@ const ResumeForm: React.FC = () => {
     const fetchResume = async () => {
       if (id) {
         try {
-          const response = await axios.get(`/api/resumes/${id}`);
+          const response = await axios.get(`/api/resumes/single?id=${id}`);
           methods.reset(response.data);
         } catch (error) {
           toast.error('Failed to load resume');
@@ -93,7 +93,7 @@ const ResumeForm: React.FC = () => {
     setIsSubmitting(true);
     try {
       if (id) {
-        await axios.put(`/api/resumes/${id}`, data);
+        await axios.put(`/api/resumes/single?id=${id}`, data);
         toast.success('Resume updated successfully');
       } else {
         await axios.post('/api/resumes', data);

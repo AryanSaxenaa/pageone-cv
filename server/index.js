@@ -52,14 +52,26 @@ const startServer = async () => {
       });
     }
 
-    // Start server only after successful DB connection
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
+    return app;
   } catch (error) {
     console.error('Failed to start server:', error);
-    process.exit(1);
+    throw error;
   }
 };
 
-startServer();
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+  startServer().then(app => {
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  });
+}
+
+// For Vercel deployment
+export default async (req, res) => {
+  if (!global.app) {
+    global.app = await startServer();
+  }
+  return global.app(req, res);
+};

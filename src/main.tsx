@@ -5,7 +5,8 @@ import App from './App';
 import './index.css';
 
 // Set base URL for axios requests
-axios.defaults.baseURL = 'http://localhost:5000';
+// In production, use the same domain. In development, use localhost:5000
+axios.defaults.baseURL = import.meta.env.PROD ? '' : 'http://localhost:5000';
 
 // Add token to requests if it exists
 const token = localStorage.getItem('token');
