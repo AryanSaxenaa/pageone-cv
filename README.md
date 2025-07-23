@@ -13,7 +13,7 @@ A modern, full-stack web application that allows users to create, manage, and ex
 
 ## Live Demo
 
-Visit the live application: [PageOneCV](https://pageonecv-e36pk0iyi-aryan-saxenas-projects-691b9d9c.vercel.app)
+Visit the live application: [PageOneCV](https://pageonecv.vercel.app/)
 
 ## Technology Stack
 
